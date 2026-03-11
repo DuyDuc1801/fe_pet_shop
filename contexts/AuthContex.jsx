@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import fetchApi from "../utils/fetchApi.jsx";
-import { AuthContext } from "./Authcontext.js";
+import fetchApi from "../utils/fetchApi";
+import { AuthContext } from "./AuthContext.js";
 
 // Kiểm tra token ngay lúc khởi tạo state
 // → nếu không có token thì loading = false luôn, tránh setLoading trong effect
