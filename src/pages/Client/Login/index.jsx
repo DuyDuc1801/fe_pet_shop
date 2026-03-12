@@ -7,8 +7,8 @@ import {
     UserOutlined, LockOutlined, EyeInvisibleOutlined, EyeTwoTone
 } from "@ant-design/icons";
 import "./style.scss";
-import fetchApi from "../../../utils/fetchApi";
-import { useAuth } from "../../../contexts/AuthContext";
+import fetchApi from "../../../../utils/fetchApi";
+import { useAuth } from "../../../../contexts/useAuth";
 
 const { Title } = Typography;
 const PRIMARY = "#f97316";

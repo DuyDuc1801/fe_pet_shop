@@ -10,7 +10,7 @@ import {
     MenuUnfoldOutlined, LogoutOutlined, SettingOutlined,
     BellOutlined, FileTextOutlined,
 } from "@ant-design/icons";
-import { useAuth } from "../../../contexts/useAuth";
+import { useAuth } from "../../../../contexts/useAuth";
 
 const { Sider, Header, Content } = Layout;
 const { Text } = Typography;
@@ -194,8 +194,8 @@ export default function LayoutAdmin() {
                                     <Avatar style={{ background: PRIMARY, fontWeight: 700 }} size={34}>
                                         {user?.fullName?.charAt(0)?.toUpperCase() || "A"}
                                     </Avatar>
-                                    <div>
-                                        <div style={{ fontSize: 13, fontWeight: 600, color: "#1c1c1c", lineHeight: 1.2 }}>{user?.fullName}</div>
+                                    <div style={{ lineHeight: 1 }}>
+                                        <div style={{ fontSize: 13, fontWeight: 600, color: "#1c1c1c", marginBottom: 3 }}>{user?.fullName}</div>
                                         <div style={{ fontSize: 11, color: "#9ca3af" }}>{user?.role}</div>
                                     </div>
                                 </div>

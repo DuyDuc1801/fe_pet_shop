@@ -7,7 +7,7 @@ import {
     UserOutlined, LockOutlined, MailOutlined, PhoneOutlined,
     EyeInvisibleOutlined, EyeTwoTone
 } from "@ant-design/icons";
-import fetchApi from "../../../utils/fetchApi";
+import fetchApi from "../../../../utils/fetchApi";
 
 const { Title } = Typography;
 const PRIMARY = "#f97316";

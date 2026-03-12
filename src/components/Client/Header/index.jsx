@@ -6,7 +6,7 @@ import {
     LogoutOutlined, SettingOutlined, DashboardOutlined,
 } from "@ant-design/icons";
 import { Menu, Button, Badge, Drawer, Space, Divider, ConfigProvider, Grid, Layout, Avatar, Dropdown } from "antd";
-import { useAuth } from "../../../contexts/AuthContext";
+import { useAuth } from "../../../../contexts/useAuth";
 
 const { useBreakpoint } = Grid;
 const PRIMARY = "#f97316";
@@ -34,18 +34,18 @@ function AuthButton({ user, navigate, setDrawerOpen, screens, userDropdownItems,
         return (
             <Dropdown menu={{ items: userDropdownItems }} placement="bottomRight" trigger={["click"]}>
                 <div
-                    style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", padding: "6px 10px", borderRadius: 10, border: "1.5px solid #e5e7eb", transition: "border-color .2s" }}
+                    style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", padding: "6px 10px", borderRadius: 10, transition: "border-color .2s" }}
                     onMouseEnter={e => e.currentTarget.style.borderColor = PRIMARY}
                     onMouseLeave={e => e.currentTarget.style.borderColor = "#e5e7eb"}
                 >
-                    <Avatar size={28} style={{ background: PRIMARY, fontSize: 13, fontWeight: 700 }}>
-                        {user.fullName?.charAt(0)?.toUpperCase()}
-                    </Avatar>
                     {screens.md && (
                         <span style={{ fontSize: 13, fontWeight: 600, color: "#374151", fontFamily: "'Be Vietnam Pro', sans-serif", maxWidth: 100, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {user.fullName}
                         </span>
                     )}
+                    <Avatar size={28} style={{ background: PRIMARY, fontSize: 13, fontWeight: 700 }}>
+                        {user.fullName?.charAt(0)?.toUpperCase()}
+                    </Avatar>
                 </div>
             </Dropdown>
         );
@@ -143,7 +143,7 @@ function Header() {
                         </ConfigProvider>
                     )}
 
-                    <Space>
+                    <Space size={"large"}>
                         <Badge count={3} color={PRIMARY}>
                             <Button
                                 icon={<ShoppingCartOutlined style={{ fontSize: 17 }} />}

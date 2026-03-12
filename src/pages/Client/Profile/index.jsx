@@ -8,8 +8,8 @@ import {
     LockOutlined, EditOutlined, CheckOutlined,
     EyeInvisibleOutlined, EyeTwoTone, CalendarOutlined,
 } from "@ant-design/icons";
-import { useAuth } from "../../../contexts/useAuth";
-import fetchApi from "../../../utils/fetchApi";
+import { useAuth } from "../../../../contexts/useAuth";
+import fetchApi from "../../../../utils/fetchApi";
 
 const { Title, Text } = Typography;
 const PRIMARY = "#f97316";
