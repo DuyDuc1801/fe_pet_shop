@@ -4,60 +4,76 @@ import Home from "../pages/Client/Home";
 import LoginPage from "../pages/Client/Login";
 import RegisterPage from "../pages/Client/Register";
 import ProfilePage from "../pages/Client/Profile";
+import BookingPage from "../pages/Client/Booking";
+import MyBookingsPage from "../pages/Client/MyBookings";
 import AdminDashboard from "../pages/Admin/Dashboard";
 import PrivateRoute from "../components/common/PrivateRoute";
 import RoleRoute from "../components/common/RoleRoute";
+import AdminAppointments from "../pages/Admin/Appointments";
+import ShopPage from "../pages/Client/Shop"; 
+import ProductDetail from "../pages/Client/ProductDetail"; 
+import CartPage from "../pages/Client/Cart"; 
+import CheckoutPage from "../pages/Client/Checkout";
+import MyOrdersPage from "../pages/Client/MyOrders";
+import DoctorsPage from "../pages/Client/Doctors";
+import DoctorDetail from "../pages/Client/DoctorDetail";
+import ServicesPage from "../pages/Client/Services";
+import ServiceDetail from "../pages/Client/ServiceDetail";
+import AdminProducts from "../pages/Admin/Products";
+import AdminOrders from "../pages/Admin/Orders";
+import AdminUsers from "../pages/Admin/Users";
+import AIDiagnosisPage from "../pages/Client/AIDiagnosis";
+import DoctorDashboard from "../pages/Doctor/Dashboard";
+import DoctorScheduleModel from "../pages/Doctor/Schedule";
 
 export const routers = [
-  // ── Client layout ──────────────────────────────────────────────
+  // Client layout 
   {
     path: "/",
     element: <LayoutDefault />,
     children: [
       { index: true, element: <Home /> },
-      { path: "login",    element: <LoginPage /> },
+      { path: "login", element: <LoginPage /> },
       { path: "register", element: <RegisterPage /> },
-
-      // Protected: cần đăng nhập
-      {
-        path: "profile",
-        element: (
-          <PrivateRoute>
-            <ProfilePage />
-          </PrivateRoute>
-        ),
+      { path: "san-pham", element: <ShopPage /> },
+      { path: "san-pham", element: <ShopPage /> },
+      { path: "san-pham/:id", element: <ProductDetail /> },
+      { path: "bac-si", element: <DoctorsPage /> },
+      { path: "bac-si/:id", element: <DoctorDetail /> },
+      { path: "dich-vu", element: <ServicesPage />  },
+      { path: "dich-vu/:id", element: <ServiceDetail /> },
+      { 
+        path: "gio-hang", 
+        element: <PrivateRoute><CartPage /></PrivateRoute>      
       },
       {
-        path: "lich-cua-toi",
-        element: (
-          <PrivateRoute>
-            {/* Tuần 2 sẽ thêm MyBookings */}
-            <div style={{ padding: 40, textAlign: "center" }}>🗓️ Lịch của tôi — Coming tuần 2</div>
-          </PrivateRoute>
-        ),
+        path: "profile",
+        element: <PrivateRoute><ProfilePage /></PrivateRoute>,
       },
       {
         path: "dat-lich-kham",
-        element: (
-          <PrivateRoute>
-            {/* Tuần 2 */}
-            <div style={{ padding: 40, textAlign: "center" }}>📅 Đặt lịch khám — Coming tuần 2</div>
-          </PrivateRoute>
-        ),
+        element: <PrivateRoute><BookingPage /></PrivateRoute>,
       },
       {
-        path: "gio-hang",
-        element: (
-          <PrivateRoute>
-            {/* Tuần 4 */}
-            <div style={{ padding: 40, textAlign: "center" }}>🛒 Giỏ hàng — Coming tuần 4</div>
-          </PrivateRoute>
-        ),
+        path: "lich-cua-toi",
+        element: <PrivateRoute><MyBookingsPage /></PrivateRoute>,
       },
+      { 
+        path: "thanh-toan",
+        element: <PrivateRoute><CheckoutPage /></PrivateRoute>
+      },
+      { 
+        path: "don-hang-cua-toi", 
+        element: <PrivateRoute><MyOrdersPage /></PrivateRoute>
+      },
+      { 
+        path: "ai-chan-doan",
+        element: <PrivateRoute><AIDiagnosisPage /></PrivateRoute> 
+      }
     ],
   },
 
-  // ── Admin layout ───────────────────────────────────────────────
+  //Admin layout
   {
     path: "/admin",
     element: (
@@ -69,38 +85,32 @@ export const routers = [
       { index: true, element: <AdminDashboard /> },
       {
         path: "appointments",
-        element: (
-          // Tuần 3
-          <div style={{ padding: 20, textAlign: "center" }}>📅 Quản lý lịch hẹn — Coming tuần 3</div>
-        ),
+        element: <AdminAppointments />,
       },
-      {
-        path: "products",
-        element: (
-          // Tuần 6
-          <div style={{ padding: 20, textAlign: "center" }}>📦 Quản lý sản phẩm — Coming tuần 6</div>
-        ),
+      { 
+        path: "products", 
+        element: <AdminProducts /> 
       },
-      {
-        path: "orders",
-        element: (
-          // Tuần 6
-          <div style={{ padding: 20, textAlign: "center" }}>🛒 Quản lý đơn hàng — Coming tuần 6</div>
-        ),
+      { 
+        path: "orders", 
+        element: <AdminOrders /> 
       },
-      {
-        path: "users",
-        element: (
-          <RoleRoute roles={["Admin"]}>
-            {/* Tuần 6 */}
-            <div style={{ padding: 20, textAlign: "center" }}>👥 Quản lý người dùng — Coming tuần 6</div>
-          </RoleRoute>
-        ),
+      { 
+        path: "users", 
+        element: <RoleRoute roles={["Admin"]}><AdminUsers /></RoleRoute> 
+      }, 
+      { 
+        path: "doctor/dashboard", 
+        element: <RoleRoute roles={["Doctor"]}><DoctorDashboard /></RoleRoute> 
       },
+      { 
+        path: "doctor/schedule",  
+        element: <RoleRoute roles={["Doctor"]}><DoctorScheduleModel /></RoleRoute>  
+      },  
     ],
   },
 
-  // ── 404 ────────────────────────────────────────────────────────
+  // --- 404 ----
   {
     path: "*",
     element: (

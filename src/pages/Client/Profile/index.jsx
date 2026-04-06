@@ -10,6 +10,7 @@ import {
 } from "@ant-design/icons";
 import { useAuth } from "../../../../contexts/useAuth";
 import fetchApi from "../../../../utils/fetchApi";
+import ImageUpload from "../../../components/common/ImageUpload";
 
 const { Title, Text } = Typography;
 const PRIMARY = "#f97316";
@@ -23,7 +24,7 @@ const ROLE_LABEL = {
 };
 
 export default function ProfilePage() {
-    const { user, updateUser } = useAuth();
+    const { user, updateUser, fetchProfile } = useAuth();
     const [profileForm] = Form.useForm();
     const [passwordForm] = Form.useForm();
     const [loadingProfile, setLoadingProfile] = useState(false);
@@ -209,12 +210,16 @@ export default function ProfilePage() {
                     {/* Header card */}
                     <Card bordered={false} style={{ borderRadius: 20, marginBottom: 24, border: "1.5px solid #f3f4f6" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
-                            <Avatar
-                                size={80}
-                                style={{ background: PRIMARY, fontSize: 32, fontWeight: 700, flexShrink: 0 }}
-                            >
-                                {user?.fullName?.charAt(0)?.toUpperCase() || "U"}
-                            </Avatar>
+                            <ImageUpload
+                                    mode="single"
+                                    shape="circle"
+                                    uploadUrl="upload/avatar"
+                                    fieldName="avatar"
+                                    currentImages={user?.avatar}
+                                    onSuccess={() => {
+                                        fetchProfile(); // reload user trong AuthContext
+                                    }}
+                            />
                             <div style={{ flex: 1 }}>
                                 <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
                                     <Title level={4} style={{ margin: 0, fontFamily: "'Be Vietnam Pro', sans-serif" }}>

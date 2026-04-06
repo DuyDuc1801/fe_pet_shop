@@ -5,20 +5,22 @@ import {
 } from "antd";
 import {
     UserOutlined, LockOutlined, MailOutlined, PhoneOutlined,
-    EyeInvisibleOutlined, EyeTwoTone
+    EyeInvisibleOutlined, EyeTwoTone,
 } from "@ant-design/icons";
 import fetchApi from "../../../../utils/fetchApi";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 const PRIMARY = "#f97316";
-const PRIMARY_LIGHT = "#fff7ed";
+
+// Ảnh khác với Login để phân biệt 2 trang
+const BG_IMAGE = "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1200&q=80";
 
 const PawIcon = ({ size = 22, color = "currentColor" }) => (
     <svg width={size} height={size} viewBox="0 0 24 24" fill={color}>
-        <ellipse cx="6" cy="7" rx="2" ry="3" />
-        <ellipse cx="18" cy="7" rx="2" ry="3" />
-        <ellipse cx="3.5" cy="13" rx="1.5" ry="2.5" />
-        <ellipse cx="20.5" cy="13" rx="1.5" ry="2.5" />
+        <ellipse cx="9.5"  cy="6"   rx="2"    ry="3.5" />
+        <ellipse cx="14.5" cy="6"   rx="2"    ry="3.5" />
+        <ellipse cx="5"    cy="9.5" rx="1.75" ry="2.5" />
+        <ellipse cx="19"   cy="9.5" rx="1.75" ry="2.5" />
         <path d="M12 10c-3.5 0-7 2-7 5.5 0 2.5 2 4.5 7 4.5s7-2 7-4.5C19 12 15.5 10 12 10z" />
     </svg>
 );
@@ -49,100 +51,249 @@ export default function RegisterPage() {
     };
 
     const inputStyle = {
-        borderRadius: 10,
+        borderRadius: 12,
         border: "1.5px solid #e5e7eb",
-        fontSize: 14,
+        height: 48,
     };
 
     return (
-        <ConfigProvider
-            theme={{
-                token: { colorPrimary: PRIMARY, borderRadius: 10, fontFamily: "'Be Vietnam Pro', sans-serif" },
-            }}
-        >
+        <ConfigProvider theme={{
+            token: { colorPrimary: PRIMARY, borderRadius: 10, fontFamily: "'Be Vietnam Pro', sans-serif" },
+        }}>
             {contextHolder}
-            <div style={{ minHeight: "100vh", display: "flex", fontFamily: "'Be Vietnam Pro', sans-serif" }}>
 
-                {/* Left panel */}
+            <div style={{ display: "flex", minHeight: "85vh" }}>
+
+                {/* ── Cột trái: Ảnh + gradient + text ── */}
                 <div style={{
-                    flex: 1, background: PRIMARY, display: "flex", flexDirection: "column",
-                    justifyContent: "center", padding: "60px 56px", position: "relative", overflow: "hidden"
+                    flex: 1,
+                    position: "relative",
+                    overflow: "hidden",
+                    display: "none",
                 }}>
-                    <div style={{ position: "absolute", top: -120, right: -120, width: 400, height: 400, borderRadius: "50%", background: "rgba(255,255,255,.08)" }} />
-                    <div style={{ position: "absolute", bottom: -80, left: -80, width: 300, height: 300, borderRadius: "50%", background: "rgba(255,255,255,.06)" }} />
+                    {/* Ảnh nền */}
+                    <img
+                        src={BG_IMAGE}
+                        alt="PooGi"
+                        style={{
+                            position: "absolute", inset: 0,
+                            width: "100%", height: "100%",
+                            objectFit: "cover",
+                            filter: "blur(2px) brightness(0.55)",
+                            transform: "scale(1.05)",
+                        }}
+                    />
 
-                    <Link to="/" style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 56, textDecoration: "none", position: "relative", zIndex: 1 }}>
-                        <div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <PawIcon size={24} color="#fff" />
-                        </div>
-                        <div>
-                            <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 26, fontWeight: 700, color: "#fff" }}>PooGi</div>
-                            <div style={{ fontSize: 11, color: "rgba(255,255,255,.7)", letterSpacing: "1.5px", textTransform: "uppercase", fontWeight: 600 }}>Phòng khám & Cửa hàng</div>
-                        </div>
-                    </Link>
+                    {/* Gradient overlay */}
+                    <div style={{
+                        position: "absolute", inset: 0,
+                        background: "linear-gradient(160deg, rgba(249,115,22,0.55) 0%, rgba(15,15,15,0.75) 60%, rgba(0,0,0,0.88) 100%)",
+                    }} />
 
-                    <Title style={{ fontFamily: "'Playfair Display', serif", color: "#fff", fontSize: "clamp(28px,3vw,38px)", lineHeight: 1.2, margin: "0 0 20px", position: "relative", zIndex: 1 }}>
-                        Tạo tài khoản,<br />bắt đầu hành trình!
-                    </Title>
-
-                    <p style={{ color: "rgba(255,255,255,.82)", fontSize: 15, lineHeight: 1.8, maxWidth: 380, position: "relative", zIndex: 1, marginBottom: 40 }}>
-                        Đăng ký miễn phí để trải nghiệm đầy đủ tính năng đặt lịch khám, mua sắm và chăm sóc thú cưng tại PooGi.
-                    </p>
-
-                    <div style={{ display: "flex", flexDirection: "column", gap: 14, position: "relative", zIndex: 1 }}>
-                        {["Đặt lịch khám dễ dàng", "Theo dõi đơn hàng realtime", "Nhận thông báo quan trọng", "Tích điểm & ưu đãi thành viên"].map((f) => (
-                            <div key={f} style={{ display: "flex", alignItems: "center", gap: 12, color: "rgba(255,255,255,.9)", fontSize: 14, fontWeight: 500 }}>
-                                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "rgba(255,255,255,.6)", flexShrink: 0 }} />
-                                {f}
+                    {/* Content */}
+                    <div style={{
+                        position: "relative", zIndex: 2,
+                        height: "100%",
+                        display: "flex", flexDirection: "column",
+                        padding: "40px 48px",
+                    }}>
+                        {/* Logo */}
+                        <Link to="/" style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none", marginBottom: "100px" }}>
+                            <div style={{
+                                width: 44, height: 44, borderRadius: 12,
+                                background: PRIMARY, display: "flex",
+                                alignItems: "center", justifyContent: "center",
+                                boxShadow: "0 4px 14px rgba(249,115,22,0.4)",
+                            }}>
+                                <PawIcon size={28} color="#fff" />
                             </div>
-                        ))}
+                            <div>
+                                <div style={{ fontWeight: 800, fontSize: 20, color: "#fff", lineHeight: 1.1, fontFamily: "'Be Vietnam Pro',sans-serif" }}>PooGi</div>
+                                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.65)", letterSpacing: "0.5px" }}>Phòng khám & Cửa hàng</div>
+                            </div>
+                        </Link>
+
+                        {/* Main text */}
+                        <div style={{ marginBottom: 48 }}>
+                            {/* Badge */}
+                            <div style={{
+                                display: "inline-flex", alignItems: "center", gap: 6,
+                                background: "rgba(249,115,22,0.25)", backdropFilter: "blur(8px)",
+                                border: "1px solid rgba(249,115,22,0.4)",
+                                borderRadius: 20, padding: "5px 14px",
+                                marginBottom: 20,
+                            }}>
+                                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#4ade80" }} />
+                                <span style={{ fontSize: 12, fontWeight: 600, color: "#fff", letterSpacing: "0.5px" }}>
+                                    Đang hoạt động 7:00 – 21:00
+                                </span>
+                            </div>
+
+                            <h1 style={{
+                                fontSize: "clamp(28px, 3vw, 42px)",
+                                fontWeight: 800, color: "#fff",
+                                fontFamily: "'Be Vietnam Pro', sans-serif",
+                                lineHeight: 1.25, margin: "0 0 16px",
+                                textShadow: "0 2px 20px rgba(0,0,0,0.3)",
+                            }}>
+                                Tạo tài khoản,<br />
+                                <span style={{ color: "#fb923c" }}>bắt đầu</span> hành trình!
+                            </h1>
+
+                            <p style={{
+                                fontSize: 15, color: "rgba(255,255,255,0.75)",
+                                lineHeight: 1.8, margin: "0 0 32px",
+                                maxWidth: 380,
+                            }}>
+                                Đăng ký miễn phí để đặt lịch khám, mua sắm và chăm sóc thú cưng — tất cả trong một nền tảng.
+                            </p>
+
+                            {/* Feature pills */}
+                            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                                {[
+                                    { icon: "📅", text: "Đặt lịch khám online 24/7"              },
+                                    { icon: "🐾", text: "Hồ sơ sức khỏe thú cưng trọn đời"       },
+                                    { icon: "🛒", text: "Cửa hàng thức ăn & phụ kiện chính hãng" },
+                                    { icon: "🎁", text: "Tích điểm & ưu đãi thành viên"           },
+                                ].map(f => (
+                                    <div key={f.text} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                                        <div style={{
+                                            width: 36, height: 36, borderRadius: 10,
+                                            background: "rgba(255,255,255,0.12)",
+                                            backdropFilter: "blur(8px)",
+                                            display: "flex", alignItems: "center", justifyContent: "center",
+                                            fontSize: 16, flexShrink: 0,
+                                        }}>
+                                            {f.icon}
+                                        </div>
+                                        <span style={{ fontSize: 14, color: "rgba(255,255,255,0.85)", fontWeight: 500 }}>
+                                            {f.text}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Stats — giống hệt Login */}
+                        <div style={{
+                            display: "flex", gap: 24,
+                            padding: "20px 24px",
+                            background: "rgba(255,255,255,0.08)",
+                            backdropFilter: "blur(12px)",
+                            borderRadius: 16,
+                            border: "1px solid rgba(255,255,255,0.12)",
+                        }}>
+                            {[
+                                { value: "500+", label: "Bệnh nhân/tháng" },
+                                { value: "4.9★", label: "Đánh giá"        },
+                                { value: "4",    label: "Bác sĩ"          },
+                            ].map(s => (
+                                <div key={s.label} style={{ flex: 1, textAlign: "center" }}>
+                                    <div style={{ fontSize: 22, fontWeight: 800, color: "#fb923c", fontFamily: "'Be Vietnam Pro',sans-serif" }}>{s.value}</div>
+                                    <div style={{ fontSize: 11, color: "rgba(255,255,255,0.6)", marginTop: 2 }}>{s.label}</div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
 
-                {/* Right form panel */}
-                <div style={{ width: 720, display: "flex", flexDirection: "column", justifyContent: "center", padding: "60px 64px", background: "#fff", overflowY: "auto" }}>
-                    <div style={{ animation: "fadeUp .55s ease both" }}>
-                        <Title style={{ fontSize: 30, fontWeight: 700, color: PRIMARY, marginBottom: 8, textAlign: "center" }}>Đăng ký tài khoản</Title>
-                        <p style={{ textAlign: "center", color: "#6b7280", fontSize: 14, marginBottom: 32 }}>
-                            Điền thông tin bên dưới để tạo tài khoản mới
-                        </p>
+                {/* ── Cột phải: Form đăng ký ── */}
+                <div style={{
+                    width: "100%",
+                    maxWidth: 600,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    padding: "48px 40px",
+                    background: "#fff",
+                    position: "relative",
+                    overflowY: "auto",
+                }}>
+                    {/* Mobile logo */}
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 36 }}>
+                        <div style={{
+                            width: 38, height: 38, borderRadius: 10,
+                            background: PRIMARY, display: "flex",
+                            alignItems: "center", justifyContent: "center",
+                        }}>
+                            <PawIcon color="#fff" />
+                        </div>
+                        <div>
+                            <div style={{ fontWeight: 800, fontSize: 17, color: "#1c1c1c", fontFamily: "'Be Vietnam Pro',sans-serif", lineHeight: 1.1 }}>PooGi</div>
+                            <div style={{ fontSize: 10, color: "#9ca3af" }}>Phòng khám & Cửa hàng</div>
+                        </div>
+                    </div>
 
-                        <Form form={form} layout="vertical" onFinish={onFinish} requiredMark={false}>
-                            <Form.Item
-                                name="fullName"
-                                label={<span style={{ fontWeight: 600, fontSize: 13.5, color: "#374151" }}>Họ và tên</span>}
-                                rules={[{ required: true, message: "Vui lòng nhập họ tên" }]}
-                                style={{ marginBottom: 16 }}
-                            >
-                                <Input prefix={<UserOutlined style={{ color: "#9ca3af" }} />} placeholder="Nguyễn Văn A" size="large" style={inputStyle} />
-                            </Form.Item>
+                    {/* Heading */}
+                    <div style={{ marginBottom: 28 }}>
+                        <Title level={2} style={{ margin: "0 0 6px", fontFamily: "'Be Vietnam Pro',sans-serif", fontWeight: 800, fontSize: 28 }}>
+                            Đăng ký tài khoản
+                        </Title>
+                        <Text style={{ color: "#6b7280", fontSize: 14 }}>
+                            Điền thông tin bên dưới để tạo tài khoản mới.
+                        </Text>
+                    </div>
 
-                            <Form.Item
-                                name="email"
-                                label={<span style={{ fontWeight: 600, fontSize: 13.5, color: "#374151" }}>Email</span>}
-                                rules={[
-                                    { required: true, message: "Vui lòng nhập email" },
-                                    { type: "email", message: "Email không hợp lệ" },
-                                ]}
-                                style={{ marginBottom: 16 }}
-                            >
-                                <Input prefix={<MailOutlined style={{ color: "#9ca3af" }} />} placeholder="ten@email.com" size="large" style={inputStyle} />
-                            </Form.Item>
+                    {/* Form */}
+                    <Form form={form} layout="vertical" onFinish={onFinish} requiredMark={false}>
 
-                            <Form.Item
-                                name="phoneNumber"
-                                label={<span style={{ fontWeight: 600, fontSize: 13.5, color: "#374151" }}>Số điện thoại <span style={{ color: "#9ca3af", fontWeight: 400 }}>(tuỳ chọn)</span></span>}
-                                style={{ marginBottom: 16 }}
-                            >
-                                <Input prefix={<PhoneOutlined style={{ color: "#9ca3af" }} />} placeholder="0901 234 567" size="large" style={inputStyle} />
-                            </Form.Item>
+                        <Form.Item
+                            name="fullName"
+                            label={<span style={{ fontWeight: 600, fontSize: 13.5, color: "#374151" }}>Họ và tên</span>}
+                            rules={[{ required: true, message: "Vui lòng nhập họ tên" }]}
+                            style={{ marginBottom: 16 }}
+                        >
+                            <Input
+                                prefix={<UserOutlined style={{ color: "#9ca3af" }} />}
+                                placeholder="Nguyễn Văn A"
+                                size="large"
+                                style={inputStyle}
+                            />
+                        </Form.Item>
 
+                        <Form.Item
+                            name="email"
+                            label={<span style={{ fontWeight: 600, fontSize: 13.5, color: "#374151" }}>Email</span>}
+                            rules={[
+                                { required: true, message: "Vui lòng nhập email" },
+                                { type: "email",  message: "Email không hợp lệ"  },
+                            ]}
+                            style={{ marginBottom: 16 }}
+                        >
+                            <Input
+                                prefix={<MailOutlined style={{ color: "#9ca3af" }} />}
+                                placeholder="ten@email.com"
+                                size="large"
+                                style={inputStyle}
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="phoneNumber"
+                            label={
+                                <span style={{ fontWeight: 600, fontSize: 13.5, color: "#374151" }}>
+                                    Số điện thoại{" "}
+                                    <span style={{ color: "#9ca3af", fontWeight: 400 }}>(tuỳ chọn)</span>
+                                </span>
+                            }
+                            style={{ marginBottom: 16 }}
+                        >
+                            <Input
+                                prefix={<PhoneOutlined style={{ color: "#9ca3af" }} />}
+                                placeholder="0901 234 567"
+                                size="large"
+                                style={inputStyle}
+                            />
+                        </Form.Item>
+
+                        {/* Mật khẩu — 2 cột */}
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 14px" }}>
                             <Form.Item
                                 name="password"
                                 label={<span style={{ fontWeight: 600, fontSize: 13.5, color: "#374151" }}>Mật khẩu</span>}
                                 rules={[
                                     { required: true, message: "Vui lòng nhập mật khẩu" },
-                                    { min: 6, message: "Mật khẩu ít nhất 6 ký tự" },
+                                    { min: 6, message: "Ít nhất 6 ký tự" },
                                 ]}
                                 style={{ marginBottom: 16 }}
                             >
@@ -151,7 +302,7 @@ export default function RegisterPage() {
                                     placeholder="Tối thiểu 6 ký tự"
                                     size="large"
                                     style={inputStyle}
-                                    iconRender={(v) => v ? <EyeTwoTone twoToneColor={PRIMARY} /> : <EyeInvisibleOutlined />}
+                                    iconRender={v => v ? <EyeTwoTone twoToneColor={PRIMARY} /> : <EyeInvisibleOutlined />}
                                 />
                             </Form.Item>
 
@@ -160,11 +311,12 @@ export default function RegisterPage() {
                                 label={<span style={{ fontWeight: 600, fontSize: 13.5, color: "#374151" }}>Xác nhận mật khẩu</span>}
                                 dependencies={["password"]}
                                 rules={[
-                                    { required: true, message: "Vui lòng xác nhận mật khẩu" },
+                                    { required: true, message: "Vui lòng xác nhận" },
                                     ({ getFieldValue }) => ({
                                         validator(_, value) {
-                                            if (!value || getFieldValue("password") === value) return Promise.resolve();
-                                            return Promise.reject(new Error("Mật khẩu xác nhận không khớp!"));
+                                            if (!value || getFieldValue("password") === value)
+                                                return Promise.resolve();
+                                            return Promise.reject(new Error("Mật khẩu không khớp!"));
                                         },
                                     }),
                                 ]}
@@ -175,35 +327,58 @@ export default function RegisterPage() {
                                     placeholder="Nhập lại mật khẩu"
                                     size="large"
                                     style={inputStyle}
-                                    iconRender={(v) => v ? <EyeTwoTone twoToneColor={PRIMARY} /> : <EyeInvisibleOutlined />}
+                                    iconRender={v => v ? <EyeTwoTone twoToneColor={PRIMARY} /> : <EyeInvisibleOutlined />}
                                 />
                             </Form.Item>
-
-                            <Form.Item noStyle>
-                                <Button
-                                    type="primary" htmlType="submit" block loading={loading}
-                                    style={{ height: 48, borderRadius: 12, fontSize: 15, fontWeight: 700, background: PRIMARY, borderColor: PRIMARY, boxShadow: "0 6px 20px rgba(249,115,22,.3)" }}
-                                >
-                                    {loading ? "Đang đăng ký..." : "Tạo tài khoản"}
-                                </Button>
-                            </Form.Item>
-                        </Form>
-
-                        <div style={{ textAlign: "center", marginTop: 24, fontSize: 13.5, color: "#6b7280" }}>
-                            Đã có tài khoản? <Link to="/login" style={{ color: PRIMARY, fontWeight: 700, textDecoration: "none" }}>Đăng nhập ngay</Link>
                         </div>
 
-                        <div style={{ textAlign: "center", marginTop: 20 }}>
-                            <Link to="/" style={{ color: "#9ca3af", fontSize: 13, textDecoration: "none" }}>← Quay về trang chủ</Link>
-                        </div>
+                        <Button
+                            type="primary" htmlType="submit" block loading={loading}
+                            style={{
+                                height: 50, borderRadius: 12, fontSize: 15, fontWeight: 700,
+                                background: PRIMARY, borderColor: PRIMARY,
+                                boxShadow: "0 4px 14px rgba(249,115,22,0.35)",
+                            }}
+                        >
+                            {loading ? "Đang đăng ký..." : "Tạo tài khoản"}
+                        </Button>
+                    </Form>
+
+                    {/* Divider */}
+                    <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "24px 0" }}>
+                        <div style={{ flex: 1, height: 1, background: "#f3f4f6" }} />
+                        <Text style={{ fontSize: 12, color: "#9ca3af" }}>hoặc</Text>
+                        <div style={{ flex: 1, height: 1, background: "#f3f4f6" }} />
                     </div>
 
-                    <style>{`
-                        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
-                        @media (max-width: 860px) { .register-left { display: none; } }
-                    `}</style>
+                    {/* Login link */}
+                    <div style={{ textAlign: "center", marginBottom: 24 }}>
+                        <Text style={{ color: "#6b7280", fontSize: 14 }}>
+                            Đã có tài khoản?{" "}
+                            <Link to="/login" style={{ color: PRIMARY, fontWeight: 700, textDecoration: "none" }}>
+                                Đăng nhập ngay
+                            </Link>
+                        </Text>
+                    </div>
+
+                    <div style={{ textAlign: "center" }}>
+                        <Link to="/" style={{ color: "#9ca3af", fontSize: 13, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4 }}>
+                            ← Quay về trang chủ
+                        </Link>
+                    </div>
                 </div>
             </div>
+
+            {/* CSS — hiện cột trái trên desktop, giống Login */}
+            <style>{`
+                @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap');
+
+                @media (min-width: 768px) {
+                    div[style*="display: none"] {
+                        display: flex !important;
+                    }
+                }
+            `}</style>
         </ConfigProvider>
     );
 }

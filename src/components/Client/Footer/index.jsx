@@ -7,7 +7,7 @@ const { Text } = Typography;
 
 function Footer() {
   const PRIMARY = "#f97316";
-  const DARK_BG = "#1a1a1a";
+  const DARK_NAVY = "#0f172a";
   const linkCols = [
     {
       title: "Dịch vụ",
@@ -32,7 +32,7 @@ function Footer() {
   );
 
   return (
-    <AntFooter style={{ background: DARK_BG, padding: 0 }}>
+    <AntFooter style={{ background: DARK_NAVY, padding: 0 }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "56px 24px 40px" }}>
         <Row gutter={[48, 40]}>
           {/* Brand */}

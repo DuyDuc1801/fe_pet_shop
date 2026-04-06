@@ -7,7 +7,7 @@ import { AuthContext } from "./AuthContext.js";
 const hasToken = () => !!localStorage.getItem("token");
 
 export function AuthProvider({ children }) {
-    const [user, setUser]       = useState(null);
+    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(hasToken); // true nếu có token, false nếu không
 
     const logout = (redirect = true) => {
@@ -24,9 +24,10 @@ export function AuthProvider({ children }) {
         localStorage.setItem("userName", userData.name);
         setUser({
             fullName: userData.name,
-            email:    userData.email,
-            role:     userData.role,
-            _id:      userData.id,
+            email: userData.email,
+            role: userData.role,
+            _id: userData.id,
+            avatar: userData.avatar,
         });
     };
 

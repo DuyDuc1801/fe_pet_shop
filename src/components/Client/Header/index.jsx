@@ -7,6 +7,7 @@ import {
 } from "@ant-design/icons";
 import { Menu, Button, Badge, Drawer, Space, Divider, ConfigProvider, Grid, Layout, Avatar, Dropdown } from "antd";
 import { useAuth } from "../../../../contexts/useAuth";
+import { useCart } from "../../../../contexts/useCart";
 
 const { useBreakpoint } = Grid;
 const PRIMARY = "#f97316";
@@ -28,7 +29,18 @@ function TopBar() {
     );
 }
 
-// ── AuthButton — đặt NGOÀI Header để tránh lỗi "created during render" ──
+function CartButton() {
+    const { totalItems } = useCart();
+    const navigate = useNavigate();
+    return (
+        <Badge count={totalItems} size="default" color="orange">
+            <Button type="text" icon={<ShoppingCartOutlined style={{fontSize: "18px"}}/>}
+                onClick={() => navigate('/gio-hang')} style={{ borderRadius: 10, width: 42, height: 42, border: "1.5px solid #e5e7eb", color: "#374151" }}/>
+        </Badge>
+    );
+}
+
+// AuthButton 
 function AuthButton({ user, navigate, setDrawerOpen, screens, userDropdownItems, block = false }) {
     if (user) {
         return (
@@ -43,8 +55,7 @@ function AuthButton({ user, navigate, setDrawerOpen, screens, userDropdownItems,
                             {user.fullName}
                         </span>
                     )}
-                    <Avatar size={28} style={{ background: PRIMARY, fontSize: 13, fontWeight: 700 }}>
-                        {user.fullName?.charAt(0)?.toUpperCase()}
+                    <Avatar size={28} src={user.avatar}>
                     </Avatar>
                 </div>
             </Dropdown>
@@ -80,8 +91,8 @@ function Header() {
         { key: "/dat-lich-kham", label: "Đặt lịch khám", icon: <CalendarOutlined /> },
         { key: "/san-pham", label: "Cửa hàng", icon: <ShoppingOutlined /> },
         { key: "/dich-vu", label: "Dịch vụ", icon: <HeartOutlined /> },
-        { key: "/tin-tuc", label: "Tin tức" },
-        { key: "/lien-he", label: "Liên hệ" },
+        { key: "/bac-si", label: "Bác sĩ"},
+        { key: "/ai-chan-doan", label: "AI dự đoán" }
     ];
 
     const selectedKey =
@@ -101,6 +112,12 @@ function Header() {
             icon: <CalendarOutlined />,
             label: "Lịch hẹn của tôi",
             onClick: () => navigate("/lich-cua-toi"),
+        },
+        {
+            key: "don-hang-cua-toi",
+            icon: <ShoppingOutlined />,
+            label: "Đơn hàng của tôi",
+            onClick: () => navigate("/don-hang-cua-toi"),
         },
         ...(user?.role && ["Admin", "Staff", "Doctor"].includes(user.role) ? [{
             key: "admin",
@@ -132,25 +149,29 @@ function Header() {
                 }}>
                     {screens.lg && (
                         <ConfigProvider theme={{ components: { Menu: { itemColor: "#374151", itemHoverColor: PRIMARY, itemSelectedColor: PRIMARY, itemSelectedBg: "rgba(249,115,22,.09)", horizontalItemSelectedColor: PRIMARY, fontSize: 14.5 } } }}>
-                            <Menu
-                                className="paw-nav"
-                                mode="horizontal"
-                                selectedKeys={[selectedKey]}
-                                onSelect={({ key }) => navigate(key)}
-                                style={{ background: "transparent", border: "none", fontFamily: "'Be Vietnam Pro', sans-serif", fontWeight: 500 }}
-                                items={navItems.map((n) => ({ key: n.key, icon: n.icon, label: n.label }))}
-                            />
+                            <Space size={20} wrap>
+                                <Menu
+                                    className="paw-nav"
+                                    mode="horizontal"
+                                    selectedKeys={[selectedKey]}
+                                    onSelect={({ key }) => navigate(key)}
+                                    style={{ 
+                                        background: "transparent", 
+                                        border: "none", 
+                                        fontFamily: "'Be Vietnam Pro', sans-serif", 
+                                        fontWeight: 500,
+                                        flex: 1,
+                                        minWidth: 0, 
+                                    }}
+                                    items={navItems}
+                                    disabledOverflow={true}
+                                />
+                            </Space>
                         </ConfigProvider>
                     )}
 
                     <Space size={"large"}>
-                        <Badge count={3} color={PRIMARY}>
-                            <Button
-                                icon={<ShoppingCartOutlined style={{ fontSize: 17 }} />}
-                                onClick={() => navigate("/gio-hang")}
-                                style={{ borderRadius: 10, width: 42, height: 42, border: "1.5px solid #e5e7eb", color: "#374151" }}
-                            />
-                        </Badge>
+                        <CartButton/>
 
                         {screens.md && (
                             <Button

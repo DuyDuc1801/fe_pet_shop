@@ -1,14 +1,10 @@
 import { useState } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import {
-    Layout, Menu, Avatar, Typography, Dropdown, ConfigProvider,
-    Button, Badge,
-} from "antd";
+import { Layout, Menu, Avatar, Typography, Badge, ConfigProvider } from "antd";
 import {
     DashboardOutlined, CalendarOutlined, ShoppingOutlined,
-    UserOutlined, ShoppingCartOutlined, MenuFoldOutlined,
-    MenuUnfoldOutlined, LogoutOutlined, SettingOutlined,
-    BellOutlined, FileTextOutlined,
+    ShoppingCartOutlined, UserOutlined, LogoutOutlined,
+    MenuFoldOutlined, MenuUnfoldOutlined, MedicineBoxOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../../../contexts/useAuth";
 
@@ -18,193 +14,104 @@ const PRIMARY = "#f97316";
 
 const PawIcon = ({ size = 18, color = "currentColor" }) => (
     <svg width={size} height={size} viewBox="0 0 24 24" fill={color}>
-        <ellipse cx="6" cy="7" rx="2" ry="3" />
-        <ellipse cx="18" cy="7" rx="2" ry="3" />
-        <ellipse cx="3.5" cy="13" rx="1.5" ry="2.5" />
+        <ellipse cx="6"    cy="7"  rx="2"   ry="3"   />
+        <ellipse cx="18"   cy="7"  rx="2"   ry="3"   />
+        <ellipse cx="3.5"  cy="13" rx="1.5" ry="2.5" />
         <ellipse cx="20.5" cy="13" rx="1.5" ry="2.5" />
         <path d="M12 10c-3.5 0-7 2-7 5.5 0 2.5 2 4.5 7 4.5s7-2 7-4.5C19 12 15.5 10 12 10z" />
     </svg>
 );
 
-const NAV_ITEMS = [
-    {
-        key: "/admin",
-        icon: <DashboardOutlined />,
-        label: "Dashboard",
-        roles: ["Admin", "Staff"],
-    },
-    {
-        key: "/admin/appointments",
-        icon: <CalendarOutlined />,
-        label: "Lịch hẹn",
-        roles: ["Admin", "Staff", "Doctor"],
-    },
-    {
-        key: "/admin/products",
-        icon: <ShoppingOutlined />,
-        label: "Sản phẩm",
-        roles: ["Admin", "Staff"],
-    },
-    {
-        key: "/admin/orders",
-        icon: <ShoppingCartOutlined />,
-        label: "Đơn hàng",
-        roles: ["Admin", "Staff"],
-    },
-    {
-        key: "/admin/users",
-        icon: <UserOutlined />,
-        label: "Người dùng",
-        roles: ["Admin"],
-    },
+const MENU_ITEMS = [
+    { key: "/admin",              icon: <DashboardOutlined />,    label: "Dashboard",       roles: ["Admin","Staff","Doctor"] },
+    { key: "/admin/appointments", icon: <CalendarOutlined />,     label: "Lịch hẹn",        roles: ["Admin","Staff","Doctor"] },
+    { key: "/admin/orders",       icon: <ShoppingCartOutlined />, label: "Đơn hàng",        roles: ["Admin","Staff"]          },
+    { key: "/admin/products",     icon: <ShoppingOutlined />,     label: "Sản phẩm",        roles: ["Admin"]                  },
+    { key: "/admin/users",        icon: <UserOutlined />,         label: "Người dùng",      roles: ["Admin"]                  },
 ];
 
 export default function LayoutAdmin() {
     const [collapsed, setCollapsed] = useState(false);
+    const navigate  = useNavigate();
+    const location  = useLocation();
     const { user, logout } = useAuth();
-    const navigate = useNavigate();
-    const location = useLocation();
 
-    // Chỉ hiển thị menu items phù hợp role
-    const visibleItems = NAV_ITEMS.filter(item =>
-        item.roles.includes(user?.role)
-    );
+    const filteredMenu = MENU_ITEMS.filter(m => m.roles.includes(user?.role));
 
-    const selectedKey = visibleItems
-        .slice()
-        .reverse()
-        .find(item => location.pathname.startsWith(item.key))?.key || "/admin";
-
-    const userMenuItems = [
-        {
-            key: "profile",
-            icon: <UserOutlined />,
-            label: "Hồ sơ cá nhân",
-            onClick: () => navigate("/profile"),
-        },
+    const menuItems = [
+        ...filteredMenu.map(m => ({
+            key:   m.key,
+            icon:  m.icon,
+            label: m.label,
+            onClick: () => navigate(m.key),
+        })),
         { type: "divider" },
         {
-            key: "logout",
+            key:  "logout",
             icon: <LogoutOutlined />,
             label: "Đăng xuất",
             danger: true,
-            onClick: logout,
+            onClick: () => { logout(); navigate("/login"); },
         },
     ];
 
     return (
-        <ConfigProvider
-            theme={{
-                token: {
-                    colorPrimary: PRIMARY,
-                    fontFamily: "'Be Vietnam Pro', sans-serif",
-                    borderRadius: 10,
-                },
-                components: {
-                    Menu: {
-                        itemColor: "#9ca3af",
-                        itemHoverColor: "#fff",
-                        itemSelectedColor: "#fff",
-                        itemSelectedBg: "rgba(249,115,22,.18)",
-                        itemHoverBg: "rgba(255,255,255,.08)",
-                        itemBg: "transparent",
-                        subMenuItemBg: "transparent",
-                    },
-                },
-            }}
-        >
+        <ConfigProvider theme={{ token: { colorPrimary: PRIMARY, fontFamily: "'Be Vietnam Pro',sans-serif" } }}>
             <Layout style={{ minHeight: "100vh" }}>
-                {/* ── Sidebar ── */}
+                {/* Sidebar */}
                 <Sider
+                    collapsible collapsed={collapsed} onCollapse={setCollapsed}
                     trigger={null}
-                    collapsible
-                    collapsed={collapsed}
-                    width={240}
-                    style={{ background: "#1a1a2e", position: "fixed", height: "100vh", left: 0, top: 0, zIndex: 100 }}
+                    style={{ background: "#111827", position: "fixed", left: 0, top: 0, bottom: 0, zIndex: 100, overflowY: "auto" }}
+                    width={220}
                 >
                     {/* Logo */}
-                    <div style={{
-                        height: 64, display: "flex", alignItems: "center",
-                        padding: collapsed ? "0 20px" : "0 24px",
-                        borderBottom: "1px solid rgba(255,255,255,.06)",
-                        overflow: "hidden", transition: "all .3s",
-                    }}>
-                        <div style={{ width: 34, height: 34, borderRadius: 10, background: PRIMARY, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <div style={{ padding: collapsed ? "20px 0" : "20px 20px", display: "flex", alignItems: "center", gap: 10, borderBottom: "1px solid rgba(255,255,255,0.08)", marginBottom: 8 }}>
+                        <div style={{ width: 36, height: 36, borderRadius: 10, background: PRIMARY, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, margin: collapsed ? "0 auto" : 0 }}>
                             <PawIcon size={18} color="#fff" />
                         </div>
                         {!collapsed && (
-                            <Text style={{ color: "#fff", fontSize: 18, fontWeight: 700, marginLeft: 12, fontFamily: "'Playfair Display', serif", whiteSpace: "nowrap" }}>
-                                PooGi
-                            </Text>
+                            <div>
+                                <div style={{ fontWeight: 800, fontSize: 16, color: "#fff", fontFamily: "'Be Vietnam Pro',sans-serif", lineHeight: 1.1 }}>PooGi</div>
+                                <div style={{ fontSize: 10, color: "rgba(255,255,255,0.45)" }}>Admin Panel</div>
+                            </div>
                         )}
                     </div>
 
-                    {/* Navigation */}
                     <Menu
                         mode="inline"
-                        selectedKeys={[selectedKey]}
-                        onSelect={({ key }) => navigate(key)}
-                        style={{ border: "none", marginTop: 12, background: "transparent" }}
-                        items={visibleItems.map(item => ({
-                            key: item.key,
-                            icon: item.icon,
-                            label: item.label,
-                            style: { borderRadius: 10, margin: "2px 12px", width: "calc(100% - 24px)" },
-                        }))}
+                        selectedKeys={[location.pathname]}
+                        items={menuItems}
+                        style={{ background: "transparent", border: "none", color: "rgba(255,255,255,0.7)", fontFamily: "'Be Vietnam Pro',sans-serif" }}
+                        theme="dark"
                     />
-
-                    {/* Bottom: go to site */}
-                    {!collapsed && (
-                        <div style={{ position: "absolute", bottom: 24, left: 12, right: 12 }}>
-                            <Button
-                                block ghost
-                                onClick={() => navigate("/")}
-                                style={{ borderRadius: 10, borderColor: "rgba(255,255,255,.15)", color: "#9ca3af", fontSize: 13 }}
-                            >
-                                ← Về trang chủ
-                            </Button>
-                        </div>
-                    )}
                 </Sider>
 
-                {/* ── Main content ── */}
-                <Layout style={{ marginLeft: collapsed ? 80 : 240, transition: "margin-left .3s" }}>
+                <Layout style={{ marginLeft: collapsed ? 80 : 220, transition: "margin-left 0.2s" }}>
                     {/* Header */}
-                    <Header style={{
-                        background: "#fff", padding: "0 24px", height: 64,
-                        display: "flex", alignItems: "center", justifyContent: "space-between",
-                        boxShadow: "0 1px 8px rgba(0,0,0,.06)", position: "sticky", top: 0, zIndex: 99,
-                    }}>
-                        <Button
-                            type="text" icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                            onClick={() => setCollapsed(!collapsed)}
-                            style={{ fontSize: 18, color: "#374151" }}
-                        />
-
-                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                            <Badge count={3} color={PRIMARY}>
-                                <Button type="text" icon={<BellOutlined style={{ fontSize: 18 }} />} style={{ color: "#374151" }} />
-                            </Badge>
-
-                            <Dropdown menu={{ items: userMenuItems }} placement="bottomRight" trigger={["click"]}>
-                                <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", padding: "6px 12px", borderRadius: 10, transition: "background .2s" }}
-                                    onMouseEnter={e => e.currentTarget.style.background = "#f9fafb"}
-                                    onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-                                >
-                                    <Avatar style={{ background: PRIMARY, fontWeight: 700 }} size={34}>
-                                        {user?.fullName?.charAt(0)?.toUpperCase() || "A"}
-                                    </Avatar>
-                                    <div style={{ lineHeight: 1 }}>
-                                        <div style={{ fontSize: 13, fontWeight: 600, color: "#1c1c1c", marginBottom: 3 }}>{user?.fullName}</div>
-                                        <div style={{ fontSize: 11, color: "#9ca3af" }}>{user?.role}</div>
-                                    </div>
-                                </div>
-                            </Dropdown>
+                    <Header style={{ background: "#fff", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1.5px solid #f3f4f6", position: "sticky", top: 0, zIndex: 99, height: 64 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                            <div onClick={() => setCollapsed(c => !c)} style={{ cursor: "pointer", fontSize: 18, color: "#6b7280", display: "flex" }}>
+                                {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                            </div>
+                            <Text style={{ fontSize: 13, color: "#9ca3af" }}>
+                                {MENU_ITEMS.find(m => m.key === location.pathname)?.label || "Dashboard"}
+                            </Text>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }} onClick={() => navigate("/profile")}>
+                            {user?.avatar
+                                ? <img src={user.avatar} style={{ width: 34, height: 34, borderRadius: "50%", objectFit: "cover" }} />
+                                : <Avatar size={34} style={{ background: PRIMARY, fontWeight: 700, fontSize: 14 }}>{user?.fullName?.charAt(0)}</Avatar>
+                            }
+                            <div style={{ display: "none", flexDirection: "column" }} className="admin-user-info">
+                                <Text style={{ fontSize: 13, fontWeight: 700, lineHeight: 1.2 }}>{user?.fullName}</Text>
+                                <Text style={{ fontSize: 11, color: "#9ca3af" }}>{user?.role}</Text>
+                            </div>
                         </div>
                     </Header>
 
-                    {/* Page content */}
-                    <Content style={{ margin: 24, minHeight: "calc(100vh - 112px)" }}>
+                    {/* Content */}
+                    <Content style={{ margin: 24, background: "#f9fafb", borderRadius: 16, padding: 24, minHeight: "calc(100vh - 112px)" }}>
                         <Outlet />
                     </Content>
                 </Layout>
