@@ -35,8 +35,17 @@ const CITIES = [
 ];
 
 const PAYMENT_METHODS = [
-    { value: 'cod',           label: '💵 Thanh toán khi nhận hàng (COD)',        desc: 'Trả tiền mặt khi nhận được hàng'        },
-    { value: 'bank_transfer', label: '🏦 Chuyển khoản ngân hàng',               desc: 'Chuyển khoản trước, xử lý sau khi nhận'  },
+    {
+        value: 'vnpay',
+        label: '💳 Thanh toán qua VNPay',
+        desc:  'ATM, Visa/Master, QR Code — Thanh toán ngay, an toàn',
+        badge: 'Khuyến nghị',
+    },
+    {
+        value: 'cod',
+        label: '💵 Thanh toán khi nhận hàng (COD)',
+        desc:  'Trả tiền mặt khi nhận được hàng',
+    }
 ];
 
 // ── Order Summary sidebar ────────────────────────────────────────
@@ -113,11 +122,10 @@ export default function CheckoutPage() {
     };
 
     const handleSubmit = async (values) => {
-        if (!cart?.items?.length) {
-            messageApi.error('Giỏ hàng trống!');
-            return;
-        }
+        if (!cart?.items?.length) { messageApi.error('Giỏ hàng trống!'); return; }
         setLoading(true);
+    
+        // Tạo đơn hàng trước
         const { res, data } = await fetchApi('orders', {
             shippingInfo: {
                 fullName: values.fullName,
@@ -128,15 +136,32 @@ export default function CheckoutPage() {
             },
             paymentMethod: values.paymentMethod,
         }, 'POST');
-        setLoading(false);
-
-        if (res.ok) {
-            setOrderId(data.order._id);
-            setStep(1);
-            clearCart();
-        } else {
-            messageApi.error(data.message || 'Đặt hàng thất bại, vui lòng thử lại.');
+    
+        if (!res.ok) {
+            setLoading(false);
+            messageApi.error(data.message || 'Đặt hàng thất bại');
+            return;
         }
+    
+        const orderId = data.order._id;
+        clearCart();
+    
+        // Nếu chọn VNPay → tạo URL và redirect
+        if (values.paymentMethod === 'vnpay') {
+            const { res: pr, data: pd } = await fetchApi('payment/create-order', { orderId }, 'POST');
+            setLoading(false);
+            if (pr.ok && pd.paymentUrl) {
+                window.location.href = pd.paymentUrl; // redirect sang VNPay
+            } else {
+                messageApi.error('Không thể tạo URL thanh toán');
+            }
+            return;
+        }
+    
+        // COD / bank_transfer → hiện màn thành công bình thường
+        setLoading(false);
+        setOrderId(orderId);
+        setStep(1);
     };
 
     // ── Success screen ────────────────────────────────────────────
@@ -257,9 +282,14 @@ export default function CheckoutPage() {
                                     {PAYMENT_METHODS.map(pm => (
                                         <Radio key={pm.value} value={pm.value}
                                             style={{ padding: '14px 16px', border: '1.5px solid #f3f4f6', borderRadius: 12, margin: 0, display: 'flex', alignItems: 'center' }}>
-                                            <div>
-                                                <div style={{ fontWeight: 600, fontSize: 14 }}>{pm.label}</div>
-                                                <div style={{ fontSize: 12, color: '#9ca3af' }}>{pm.desc}</div>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                                <div>
+                                                    <div style={{ fontWeight: 600, fontSize: 14 }}>
+                                                        {pm.label}
+                                                        {pm.badge && <Tag color="orange" style={{ borderRadius: 6, fontSize: 11, marginLeft: 8 }}>{pm.badge}</Tag>}
+                                                    </div>
+                                                    <div style={{ fontSize: 12, color: '#9ca3af' }}>{pm.desc}</div>
+                                                </div>
                                             </div>
                                         </Radio>
                                     ))}

@@ -27,7 +27,7 @@ export default function ReviewModal({ type, targetName, targetImage, appointment
 
         setLoading(true);
         const endpoint = type === 'doctor' ? 'reviews/doctor' : 'reviews/product';
-        const body     = type === 'doctor'
+        const body = type === 'doctor'
             ? { appointmentId, rating, comment }
             : { orderId, productId, rating, comment };
 

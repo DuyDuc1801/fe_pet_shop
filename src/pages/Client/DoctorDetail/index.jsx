@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 import {
     Row, Col, Button, Tag, Typography, Spin,
     ConfigProvider, Avatar, Divider, Rate, Card, Space, Badge
@@ -52,9 +53,10 @@ export default function DoctorDetail() {
         if (res.ok) {
             setDoctor(data.doctor);
 
-            // GỌI THÊM ĐOẠN NÀY: Lấy review thực tế từ route bạn đã có
+            // GỌI THÊM ĐOẠN NÀY: Lấy review thực tế từ route đã có
             const reviewRes = await fetchApi(`reviews/doctor/${id}`, null, 'GET');
             if (reviewRes.res.ok) {
+                console.log("Review thực tế đã tải:", reviewRes.data.reviews);
                 setReviews(reviewRes.data.reviews || []);
             }
         } else {
@@ -231,10 +233,10 @@ export default function DoctorDetail() {
                                         }}>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                                                 <Space>
-                                                    <Avatar size="small" style={{ background: PRIMARY }}>{r.name.charAt(0)}</Avatar>
-                                                    <Text strong>{r.name}</Text>
+                                                    <Avatar size="small" style={{ background: PRIMARY }}>{r.user.fullName.charAt(0)}</Avatar>
+                                                    <Text strong>{r.user.fullName}</Text>
                                                 </Space>
-                                                <Text type="secondary" style={{ fontSize: 12 }}>{r.date}</Text>
+                                                <Text type="secondary" style={{ fontSize: 12 }}>{dayjs(r.createdAt).format("DD/MM/YYYY")}</Text>
                                             </div>
                                             <Rate disabled value={r.rating} style={{ fontSize: 10, marginBottom: 8 }} />
                                             <Paragraph style={{ margin: 0, color: '#64748b', fontSize: 13, fontStyle: 'italic' }}>

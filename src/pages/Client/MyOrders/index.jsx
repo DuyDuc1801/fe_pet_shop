@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import {
     Card, Tag, Button, Typography, Spin, Empty,
-    ConfigProvider, message, Modal, Input, Pagination, Tooltip,
-    Tabs, Avatar, Badge, Space, Divider
+    ConfigProvider, message, Modal, Input, Pagination, Space, Divider, Badge, Avatar
 } from "antd";
 import {
     ShoppingOutlined, ClockCircleOutlined, CarOutlined,
@@ -11,15 +10,15 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import fetchApi from "../../../../utils/fetchApi";
-import ReviewModal from "../../../components/common/ReviewModal";
+import fetchApi from "../../../../utils/fetchApi"; // Cập nhật lại đường dẫn cho đúng với dự án của bạn
+import ReviewModal from "../../../components/common/ReviewModal"; // Cập nhật lại đường dẫn
 
 const { Title, Text, Paragraph } = Typography;
 const PRIMARY = "#f97316";
 const DARK_NAVY = "#0f172a";
 
 const STATUS_CONFIG = {
-    all:       { color: "default", label: "Tất cả",       icon: null },
+    all:       { color: "default", label: "Tất cả",      icon: null },
     pending:   { color: "orange",  label: "Chờ xác nhận",  icon: <ClockCircleOutlined />, canCancel: true },
     confirmed: { color: "blue",    label: "Đã xác nhận",  icon: <CheckCircleOutlined />, canCancel: true },
     shipping:  { color: "purple",  label: "Đang giao",    icon: <CarOutlined />,         canCancel: false },
@@ -60,7 +59,7 @@ function OrderCard({ order, onCancel, onReview }) {
                 </Tag>
             </div>
 
-            {/* Content: Danh sách sản phẩm */}
+            {/* Content: Danh sách sản phẩm (ĐÃ FIX: Thêm nút đánh giá cho từng item) */}
             <div style={{ marginBottom: 20 }}>
                 {order.items.map((item, i) => (
                     <div key={i} style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
@@ -75,14 +74,28 @@ function OrderCard({ order, onCancel, onReview }) {
                             <Text strong style={{ fontSize: 15, display: "block", marginBottom: 4 }} ellipsis>{item.name}</Text>
                             <Text type="secondary" style={{ fontSize: 12 }}>Đơn giá: {item.price.toLocaleString("vi-VN")}₫</Text>
                         </div>
-                        <div style={{ textAlign: "right" }}>
+                        
+                        {/* Cột hiển thị Giá tổng + Nút đánh giá của MỖI SẢN PHẨM */}
+                        <div style={{ textAlign: "right", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
                             <Text strong style={{ fontSize: 15 }}>{(item.price * item.quantity).toLocaleString("vi-VN")}₫</Text>
+                            
+                            {/* Nút đánh giá cho từng sản phẩm riêng biệt */}
+                            {canReview && (
+                                <Button 
+                                    size="small"
+                                    icon={<StarFilled />} 
+                                    onClick={() => onReview(order, item)}
+                                    style={{ borderRadius: 6, borderColor: "#f59e0b", color: "#f59e0b" }}
+                                >
+                                    Đánh giá
+                                </Button>
+                            )}
                         </div>
                     </div>
                 ))}
             </div>
 
-            {/* Footer: Tổng tiền & Nút bấm */}
+            {/* Footer: Tổng tiền & Nút bấm (ĐÃ FIX: Xóa nút đánh giá ở góc dưới) */}
             <div style={{ 
                 display: "flex", 
                 justifyContent: "space-between", 
@@ -102,12 +115,7 @@ function OrderCard({ order, onCancel, onReview }) {
                             Hủy đơn
                         </Button>
                     )}
-                    {canReview && (
-                        <Button icon={<StarFilled />} onClick={() => onReview(order)}
-                            style={{ borderRadius: 10, background: "#fff", borderColor: "#f59e0b", color: "#f59e0b", fontWeight: 700 }}>
-                            Đánh giá
-                        </Button>
-                    )}
+                    
                     <Button 
                         type="primary" 
                         icon={<EyeOutlined />}
@@ -132,9 +140,12 @@ export default function MyOrdersPage() {
     const [cancelId, setCancelId] = useState("");
     const [cancelReason, setCancelReason] = useState("");
     const [cancelling, setCancelling] = useState(false);
+    
+    // State quản lý Modal Đánh giá
     const [reviewOrder, setReviewOrder] = useState(null);
     const [reviewItem, setReviewItem] = useState(null);
     const [reviewOpen, setReviewOpen] = useState(false);
+    
     const [messageApi, ctxHolder] = message.useMessage();
     const navigate = useNavigate();
 
@@ -152,11 +163,11 @@ export default function MyOrdersPage() {
     }, []);
 
     useEffect(() => {
-    const initFetch = async () => {
-        await loadOrders(1, "all");
-    };
-    initFetch();
-}, [loadOrders]);
+        const initFetch = async () => {
+            await loadOrders(1, "all");
+        };
+        initFetch();
+    }, [loadOrders]);
 
     const handleCancel = async () => {
         if (!cancelReason.trim()) return messageApi.warning("Vui lòng nhập lý do hủy");
@@ -170,9 +181,10 @@ export default function MyOrdersPage() {
         } else messageApi.error(data.message || "Hủy thất bại");
     };
 
-    const handleOpenReview = (order) => {
+    // ĐÃ FIX: Nhận trực tiếp item được click thay vì hardcode phần tử đầu tiên
+    const handleOpenReview = (order, item) => {
         setReviewOrder(order);
-        setReviewItem(order.items[0]);
+        setReviewItem(item);
         setReviewOpen(true);
     };
 
@@ -186,18 +198,27 @@ export default function MyOrdersPage() {
                     <Text type="secondary">Theo dõi trạng thái và quản lý lịch sử mua hàng của bạn</Text>
                 </div>
 
-                {/* Status Tabs - Chuẩn Thương mại điện tử */}
+                {/* Status Tabs */}
                 <div style={{ background: "#fff", borderRadius: 16, padding: "0 16px", marginBottom: 24, boxShadow: "0 4px 12px rgba(0,0,0,0.02)" }}>
-                    <Tabs 
-                        activeKey={statusFilter} 
-                        onChange={v => { setStatusFilter(v); setPage(1); loadOrders(1, v); }}
-                        tabBarStyle={{ marginBottom: 0 }}
-                        className="custom-order-tabs"
-                        items={Object.entries(STATUS_CONFIG).map(([key, val]) => ({
-                            key: key,
-                            label: <span style={{ padding: "0 8px", fontWeight: statusFilter === key ? 700 : 500 }}>{val.label}</span>
-                        }))}
-                    />
+                    <div className="custom-order-tabs" style={{ display: "flex", gap: "20px", padding: "10px 0", overflowX: "auto" }}>
+                        {Object.entries(STATUS_CONFIG).map(([key, val]) => (
+                            <div 
+                                key={key}
+                                onClick={() => { setStatusFilter(key); setPage(1); loadOrders(1, key); }}
+                                style={{
+                                    padding: "8px 16px",
+                                    cursor: "pointer",
+                                    fontWeight: statusFilter === key ? 700 : 500,
+                                    color: statusFilter === key ? PRIMARY : "#64748b",
+                                    borderBottom: statusFilter === key ? `3px solid ${PRIMARY}` : "3px solid transparent",
+                                    whiteSpace: "nowrap",
+                                    transition: "all 0.3s"
+                                }}
+                            >
+                                {val.label}
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 {loading ? (
@@ -259,18 +280,16 @@ export default function MyOrdersPage() {
                     targetName={reviewItem.name}
                     targetImage={reviewItem.image}
                     orderId={reviewOrder._id}
-                    productId={reviewItem.product}
+                    productId={reviewItem.product} // ID của sản phẩm để lưu xuống database
                     open={reviewOpen}
                     onClose={() => { setReviewOpen(false); setReviewOrder(null); setReviewItem(null); }}
-                    onSuccess={() => { messageApi.success("Cảm ơn bạn đã đánh giá!"); loadOrders(page, statusFilter); }}
+                    onSuccess={() => { loadOrders(page, statusFilter); }}
                 />
             )}
 
             <style>{`
                 @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-                .custom-order-tabs .ant-tabs-ink-bar { background: ${PRIMARY} !important; height: 3px !important; }
-                .custom-order-tabs .ant-tabs-tab-active .ant-tabs-tab-btn { color: ${PRIMARY} !important; }
-                .custom-order-tabs .ant-tabs-nav::before { border-bottom: none !important; }
+                .custom-order-tabs::-webkit-scrollbar { display: none; }
             `}</style>
         </ConfigProvider>
     );

@@ -35,20 +35,28 @@ export default function LoginPage() {
 
     const from = location.state?.from?.pathname || "/";
 
+     
     const onFinish = async (values) => {
         setLoading(true);
         const { res, data } = await fetchApi("auth/login", values);
+    
         if (!res.ok) {
             setLoading(false);
             return messageApi.error(data.message || "Đăng nhập thất bại");
         }
+    
         login(data.token, data);
         messageApi.success("Đăng nhập thành công! 🐾");
         setLoading(false);
+    
         setTimeout(() => {
-            if (data.role === "Admin" || data.role === "Staff") navigate("/admin");
-            else if (data.role === "Doctor") navigate("/admin/appointments");
-            else navigate(from, { replace: true });
+            if (data.role === "Admin" || data.role === "Staff") {
+                navigate("/admin");           // ← Admin/Staff vào /admin
+            } else if (data.role === "Doctor") {
+                navigate("/doctor");          // ← Doctor vào /doctor (layout riêng)
+            } else {
+                navigate(from, { replace: true }); // ← Customer về trang cũ
+            }
         }, 500);
     };
 
@@ -105,7 +113,7 @@ export default function LoginPage() {
                                 <PawIcon size={28} color="#fff" />
                             </div>
                             <div>
-                                <div style={{ fontWeight: 800, fontSize: 20, color: "#fff", lineHeight: 1.1, fontFamily: "'Be Vietnam Pro',sans-serif" }}>PooGi</div>
+                                <div style={{ fontWeight: 700, fontSize: 20, color: "#fff", lineHeight: 1.1, fontFamily: "'Be Vietnam Pro',sans-serif" }}>PooGi</div>
                                 <div style={{ fontSize: 11, color: "rgba(255,255,255,0.65)", letterSpacing: "0.5px" }}>Phòng khám & Cửa hàng</div>
                             </div>
                         </Link>
@@ -128,7 +136,7 @@ export default function LoginPage() {
 
                             <h1 style={{
                                 fontSize: "clamp(28px, 3vw, 42px)",
-                                fontWeight: 800, color: "#fff",
+                                fontWeight: 700, color: "#fff",
                                 fontFamily: "'Be Vietnam Pro', sans-serif",
                                 lineHeight: 1.25, margin: "0 0 16px",
                                 textShadow: "0 2px 20px rgba(0,0,0,0.3)",
@@ -186,7 +194,7 @@ export default function LoginPage() {
                                 { value: "4",    label: "Bác sĩ"          },
                             ].map(s => (
                                 <div key={s.label} style={{ flex: 1, textAlign: "center" }}>
-                                    <div style={{ fontSize: 22, fontWeight: 800, color: "#fb923c", fontFamily: "'Be Vietnam Pro',sans-serif" }}>{s.value}</div>
+                                    <div style={{ fontSize: 22, fontWeight: 700, color: "#fb923c", fontFamily: "'Be Vietnam Pro',sans-serif" }}>{s.value}</div>
                                     <div style={{ fontSize: 11, color: "rgba(255,255,255,0.6)", marginTop: 2 }}>{s.label}</div>
                                 </div>
                             ))}
@@ -216,14 +224,14 @@ export default function LoginPage() {
                             <PawIcon color="#fff" />
                         </div>
                         <div>
-                            <div style={{ fontWeight: 800, fontSize: 17, color: "#1c1c1c", fontFamily: "'Be Vietnam Pro',sans-serif", lineHeight: 1.1 }}>PooGi</div>
+                            <div style={{ fontWeight: 700, fontSize: 17, color: "#1c1c1c", fontFamily: "'Be Vietnam Pro',sans-serif", lineHeight: 1.1 }}>PooGi</div>
                             <div style={{ fontSize: 10, color: "#9ca3af" }}>Phòng khám & Cửa hàng</div>
                         </div>
                     </div>
 
                     {/* Heading */}
                     <div style={{ marginBottom: 32 }}>
-                        <Title level={2} style={{ margin: "0 0 6px", fontFamily: "'Be Vietnam Pro',sans-serif", fontWeight: 800, fontSize: 28 }}>
+                        <Title level={2} style={{ margin: "0 0 6px", fontFamily: "'Be Vietnam Pro',sans-serif", fontWeight: 700, fontSize: 28 }}>
                             Đăng nhập
                         </Title>
                         <Text style={{ color: "#6b7280", fontSize: 14 }}>

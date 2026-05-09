@@ -35,7 +35,7 @@ function Hero() {
                         <span style={{ color: "#fff", fontSize: 13, fontWeight: 700, letterSpacing: 0.5 }}>OPEN: 07:00 – 21:00 DAILY</span>
                     </div>
 
-                    <Title style={{ color: "#fff", fontSize: "clamp(42px, 6vw, 76px)", fontWeight: 800, margin: "0 0 24px", lineHeight: 1.1, letterSpacing: "-2px" }}>
+                    <Title style={{ color: "#fff", fontSize: "clamp(42px, 6vw, 76px)", fontWeight: 700, margin: "0 0 24px", lineHeight: 1.1, letterSpacing: "-2px" }}>
                         Chăm sóc thú cưng <br />
                         <span style={{ background: "linear-gradient(to right, #fb923c, #f97316)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Tận tâm nhất</span>
                     </Title>
@@ -47,7 +47,7 @@ function Hero() {
                     <Space size={16} wrap>
                         <Link to="/dat-lich-kham">
                             <Button type="primary" size="large" icon={<CalendarOutlined />}
-                                style={{ background: PRIMARY, border: "none", borderRadius: 16, height: 60, paddingInline: 36, fontSize: 16, fontWeight: 800, boxShadow: `0 12px 24px -6px ${PRIMARY}60` }}>
+                                style={{ background: PRIMARY, border: "none", borderRadius: 16, height: 60, paddingInline: 36, fontSize: 16, fontWeight: 700, boxShadow: `0 12px 24px -6px ${PRIMARY}60` }}>
                                 ĐẶT LỊCH NGAY
                             </Button>
                         </Link>
@@ -119,7 +119,7 @@ function Services() {
                     </Col>
                     <Col xs={24} lg={12}>
                         <Tag color="orange" style={{ borderRadius: 8, fontWeight: 700, marginBottom: 16, border: "none", padding: "4px 12px" }}>DỊCH VỤ CỦA CHÚNG TÔI</Tag>
-                        <Title level={2} style={{ fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 800, color: DARK_NAVY, margin: "0 0 24px", lineHeight: 1.2 }}>
+                        <Title level={2} style={{ fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 700, color: DARK_NAVY, margin: "0 0 24px", lineHeight: 1.2 }}>
                             Tiêu chuẩn vàng cho <br /><span style={{ color: PRIMARY }}>sức khỏe thú cưng</span>
                         </Title>
                         <Paragraph style={{ fontSize: 17, color: "#64748b", lineHeight: 1.8, marginBottom: 40 }}>
@@ -166,14 +166,14 @@ function CTABooking() {
             }}>
                 <div style={{ position: "absolute", top: -50, right: -50, fontSize: 200, opacity: 0.1, color: "#fff" }}>🐾</div>
                 <div style={{ position: "relative", zIndex: 1 }}>
-                    <Title level={2} style={{ color: "#fff", fontSize: "clamp(32px, 5vw, 56px)", fontWeight: 800, margin: "0 0 20px" }}>
+                    <Title level={2} style={{ color: "#fff", fontSize: "clamp(32px, 5vw, 56px)", fontWeight: 700, margin: "0 0 20px" }}>
                         Sẵn sàng chăm sóc bé cưng?
                     </Title>
                     <Paragraph style={{ color: "rgba(255,255,255,0.9)", fontSize: 18, marginBottom: 40 }}>
                         Đặt lịch online chỉ trong 1 phút — Tiết kiệm thời gian, xác nhận ngay qua Zalo.
                     </Paragraph>
                     <Link to="/dat-lich-kham">
-                        <Button size="large" style={{ background: "#fff", color: PRIMARY, border: "none", borderRadius: 16, height: 64, paddingInline: 48, fontSize: 18, fontWeight: 800 }}>
+                        <Button size="large" style={{ background: "#fff", color: PRIMARY, border: "none", borderRadius: 16, height: 64, paddingInline: 48, fontSize: 18, fontWeight: 700 }}>
                             ĐẶT LỊCH NGAY
                         </Button>
                     </Link>
@@ -196,7 +196,7 @@ function Reviews() {
             <div style={{ maxWidth: 1300, margin: "0 auto", padding: "0 24px" }}>
                 <div style={{ textAlign: "center", marginBottom: 70 }}>
                     <Tag color="orange" style={{ borderRadius: 8, fontWeight: 700, marginBottom: 16, border: "none", padding: "4px 12px" }}>TESTIMONIALS</Tag>
-                    <Title level={2} style={{ fontWeight: 800, color: DARK_NAVY, fontSize: 42 }}>Cộng đồng yêu thú cưng tin dùng</Title>
+                    <Title level={2} style={{ fontWeight: 700, color: DARK_NAVY, fontSize: 42 }}>Cộng đồng yêu thú cưng tin dùng</Title>
                 </div>
                 <Row gutter={[24, 24]}>
                     {REVIEWS.map(r => (

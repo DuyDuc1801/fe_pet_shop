@@ -25,6 +25,16 @@ import AdminUsers from "../pages/Admin/Users";
 import AIDiagnosisPage from "../pages/Client/AIDiagnosis";
 import DoctorDashboard from "../pages/Doctor/Dashboard";
 import DoctorScheduleModel from "../pages/Doctor/Schedule";
+import PaymentResult from "../pages/Client/PaymentResult";
+import DoctorAppointments from "../pages/Doctor/Appointments";
+import LayoutDoctor from "../layouts/Doctor";
+import DoctorSchedulePage from "../pages/Doctor/Schedule";
+import DoctorLeaveRequest from "../pages/Doctor/LeaveRequest";
+import DoctorProfile from "../pages/Doctor/Profile";
+import AdminServices from "../pages/Admin/Services";
+import AdminDoctors from "../pages/Admin/Doctors";
+import AdminInventory from "../pages/Admin/Inventory";
+import AdminLeaveRequests from "../pages/Admin/LeaveRequests";
 
 export const routers = [
   // Client layout 
@@ -69,7 +79,11 @@ export const routers = [
       { 
         path: "ai-chan-doan",
         element: <PrivateRoute><AIDiagnosisPage /></PrivateRoute> 
-      }
+      },
+      { 
+        path: "payment-result", 
+        element: <PaymentResult />     
+      },
     ],
   },
 
@@ -77,36 +91,35 @@ export const routers = [
   {
     path: "/admin",
     element: (
-      <RoleRoute roles={["Admin", "Staff", "Doctor"]}>
-        <LayoutAdmin />
-      </RoleRoute>
+        <RoleRoute roles={["Admin", "Staff"]}>
+            <LayoutAdmin />
+        </RoleRoute>
     ),
     children: [
-      { index: true, element: <AdminDashboard /> },
-      {
-        path: "appointments",
-        element: <AdminAppointments />,
-      },
-      { 
-        path: "products", 
-        element: <AdminProducts /> 
-      },
-      { 
-        path: "orders", 
-        element: <AdminOrders /> 
-      },
-      { 
-        path: "users", 
-        element: <RoleRoute roles={["Admin"]}><AdminUsers /></RoleRoute> 
-      }, 
-      { 
-        path: "doctor/dashboard", 
-        element: <RoleRoute roles={["Doctor"]}><DoctorDashboard /></RoleRoute> 
-      },
-      { 
-        path: "doctor/schedule",  
-        element: <RoleRoute roles={["Doctor"]}><DoctorScheduleModel /></RoleRoute>  
-      },  
+        { index: true, element: <AdminDashboard /> },
+        { path: "appointments", element: <AdminAppointments /> },
+        { path: "products", element: <AdminProducts /> },
+        { path: "orders", element: <AdminOrders /> },
+        { path: "inventory", element: <AdminInventory />},
+        { path: "leave-requests", element: <AdminLeaveRequests /> },
+        { path: "users", element: <RoleRoute roles={["Admin"]}><AdminUsers /></RoleRoute> },
+        { path: "services", element: <AdminServices />     },
+        { path: "doctors", element: <RoleRoute roles={["Admin"]}><AdminDoctors /></RoleRoute>  },
+
+    ],
+  },
+  {
+    path: "/doctor",
+    element: (
+        <RoleRoute roles={["Doctor"]}>
+            <LayoutDoctor />
+        </RoleRoute>
+    ),
+    children: [
+        { index: true, element: <DoctorDashboard /> },
+        { path: "appointments", element: <DoctorAppointments /> }, // Chỉ lịch của mình
+        { path: "leave-request", element: <DoctorLeaveRequest /> },
+        { path: "profile", element: <DoctorProfile /> }
     ],
   },
 

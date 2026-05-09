@@ -1,24 +1,14 @@
-const PoogiIcon = ({ size, color = "#FF8C42" }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill={color}>
-    {/* Thân tròn to */}
-    <ellipse cx="12" cy="17.5" rx="8.4" ry="6" />
-    {/* 2 ngón ngoài — nhỏ hơn, thấp hơn */}
-    <ellipse cx="3.3"  cy="10"  rx="2.4" ry="3" />
-    <ellipse cx="20.7" cy="10"  rx="2.4" ry="3" />
-    {/* 2 ngón giữa — to hơn, cao hơn */}
-    <ellipse cx="8.7"  cy="6.6" rx="3"   ry="3.9" />
-    <ellipse cx="15.3" cy="6.6" rx="3"   ry="3.9" />
-     <text
-      x="12" y="33"
-      textAnchor="middle"
-      fontFamily="'Be Vietnam Pro', sans-serif"
-      fontSize="8"
-      fontWeight="700"
-      fill={color}
-    >
-      Poogi
-    </text>
-  </svg>
+// Đường dẫn ví dụ: src/components/icons/PawIcon.jsx
+import React from 'react';
+
+const PoogiIcon = ({ size = 22, color = "currentColor", style }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={color} style={style}>
+        <ellipse cx="9.5" cy="6" rx="2" ry="3.5" />
+        <ellipse cx="14.5" cy="6" rx="2" ry="3.5" />
+        <ellipse cx="5" cy="9.5" rx="1.75" ry="2.5" />
+        <ellipse cx="19" cy="9.5" rx="1.75" ry="2.5" />
+        <path d="M12 10c-3.5 0-7 2-7 5.5 0 2.5 2 4.5 7 4.5s7-2 7-4.5C19 12 15.5 10 12 10z" />
+    </svg>
 );
 
 export default PoogiIcon;

@@ -55,7 +55,14 @@ function AuthButton({ user, navigate, setDrawerOpen, screens, userDropdownItems,
                             {user.fullName}
                         </span>
                     )}
-                    <Avatar size={28} src={user.avatar}>
+                    <Avatar 
+                        size={28} 
+                        src={user.avatar || undefined} 
+                        style={{ backgroundColor: user.avatar ? 'transparent' : `${PRIMARY}` }}
+                    >
+                        <span style={{ fontSize: 14, fontWeight: 600 }}>
+                            {user.fullName.charAt(0)}
+                        </span>
                     </Avatar>
                 </div>
             </Dropdown>
@@ -119,11 +126,17 @@ function Header() {
             label: "Đơn hàng của tôi",
             onClick: () => navigate("/don-hang-cua-toi"),
         },
-        ...(user?.role && ["Admin", "Staff", "Doctor"].includes(user.role) ? [{
+        ...(user?.role && ["Admin", "Staff"].includes(user.role) ? [{
             key: "admin",
             icon: <DashboardOutlined />,
             label: "Trang quản trị",
             onClick: () => navigate("/admin"),
+        }] : []),
+        ...(user?.role && ["Doctor"].includes(user.role) ? [{
+            key: "doctor",
+            icon: <DashboardOutlined />,
+            label: "Trang quản trị",
+            onClick: () => navigate("/doctor"),
         }] : []),
         { type: "divider" },
         {

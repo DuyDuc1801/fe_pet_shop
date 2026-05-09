@@ -140,6 +140,7 @@ export default function AdminOrders() {
     const [statusFilter, setStatusFilter] = useState("");
     const [drawerOrder,  setDrawerOrder]  = useState(null);
     const [drawerOpen,   setDrawerOpen]   = useState(false);
+    const [_,   ctxHolder]       = message.useMessage();
 
     const PAGE_SIZE = 10;
 
@@ -227,19 +228,55 @@ export default function AdminOrders() {
         {
             title: "Thao tác",
             key: "actions",
-            width: 80,
-            render: (_, r) => (
-                <Tooltip title="Xem chi tiết">
-                    <Button size="small" icon={<EyeOutlined />}
-                        onClick={() => { setDrawerOrder(r); setDrawerOpen(true); }}
-                        style={{ borderRadius: 8 }} />
-                </Tooltip>
-            ),
+            width: 160,
+            render: (_, r) => {
+                const nextSt = NEXT_STATUS[r.status];
+                const NEXT_LABEL = {
+                    confirmed: { label: "Xác nhận", color: "#22c55e", icon: <CheckOutlined /> },
+                    shipping:  { label: "Giao hàng", color: "#a855f7", icon: <CarOutlined />  },
+                    delivered: { label: "Hoàn thành", color: "#3b82f6", icon: <CheckCircleOutlined /> },
+                };
+                const nextCfg = nextSt ? NEXT_LABEL[nextSt] : null;
+
+                return (
+                    <Space size={6}>
+                        {/* Nút chuyển trạng thái nhanh */}
+                        {nextCfg && (
+                            <Tooltip title={nextCfg.label}>
+                                <Button size="small" icon={nextCfg.icon}
+                                    onClick={async () => {
+                                        const { res, data } = await fetchApi(`admin/orders/${r._id}/status`, { status: nextSt }, "PUT");
+                                        if (res.ok) handleUpdate(data.order);
+                                    }}
+                                    style={{ borderRadius: 8, background: nextCfg.color, borderColor: nextCfg.color, color: "#fff" }} />
+                            </Tooltip>
+                        )}
+                        {/* Nút hủy nhanh */}
+                        {r.status !== "cancelled" && r.status !== "delivered" && (
+                            <Tooltip title="Hủy đơn">
+                                <Button size="small" icon={<CloseCircleOutlined />} danger
+                                    onClick={async () => {
+                                        const { res, data } = await fetchApi(`admin/orders/${r._id}/status`, { status: "cancelled" }, "PUT");
+                                        if (res.ok) handleUpdate(data.order);
+                                    }}
+                                    style={{ borderRadius: 8 }} />
+                            </Tooltip>
+                        )}
+                        {/* Nút xem chi tiết */}
+                        <Tooltip title="Xem chi tiết">
+                            <Button size="small" icon={<EyeOutlined />}
+                                onClick={() => { setDrawerOrder(r); setDrawerOpen(true); }}
+                                style={{ borderRadius: 8 }} />
+                        </Tooltip>
+                    </Space>
+                );
+            },
         },
     ];
 
     return (
         <ConfigProvider theme={{ token: { colorPrimary: PRIMARY, fontFamily: "'Be Vietnam Pro',sans-serif" } }}>
+            {ctxHolder}
 
             <div style={{ marginBottom: 24 }}>
                 <Title level={3} style={{ margin: 0 }}>🛒 Quản lý đơn hàng</Title>
